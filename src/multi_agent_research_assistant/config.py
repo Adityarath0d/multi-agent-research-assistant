@@ -3,6 +3,8 @@ from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+
 
 class Settings(BaseSettings):
     """Application settings, loaded from environment variables (prefix RA_)."""
@@ -15,6 +17,7 @@ class Settings(BaseSettings):
 
     app_name: str = "research-assistant"
     environment: Literal["local", "test", "production"] = "local"
+    log_level: LogLevel = "INFO"
 
 
 @lru_cache
