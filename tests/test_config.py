@@ -1,5 +1,5 @@
 import pytest
-from pydantic import ValidationError
+from pydantic import SecretStr, ValidationError
 
 from multi_agent_research_assistant.config import Settings
 
@@ -23,3 +23,11 @@ def test_log_level_is_read_from_environment(monkeypatch: pytest.MonkeyPatch) -> 
 def test_invalid_log_level_is_rejected() -> None:
     with pytest.raises(ValidationError):
         Settings(_env_file=None, log_level="LOUD")  # type: ignore[arg-type]
+
+
+def test_api_key_is_not_exposed_in_repr() -> None:
+    settings = Settings(_env_file=None, gemini_api_key=SecretStr("super-secret"))
+
+    assert "super-secret" not in repr(settings)
+    assert settings.gemini_api_key is not None
+    assert settings.gemini_api_key.get_secret_value() == "super-secret"
