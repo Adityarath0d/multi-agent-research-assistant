@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     llm_max_tokens: int = Field(default=2048, gt=0)
     llm_max_retries: int = Field(default=2, ge=0, le=5)
     gemini_api_key: SecretStr | None = None
+    # Tavily. The API key is optional; if not set, the search endpoint will be disabled.
+    search_max_results: int = Field(default=5, gt=0, le=10)
+    search_timeout_seconds: float = Field(default=10.0, gt=0)
+    tavily_api_key: SecretStr | None = None
 
 
 @lru_cache
