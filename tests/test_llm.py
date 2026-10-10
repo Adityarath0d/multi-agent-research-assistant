@@ -55,6 +55,7 @@ async def test_complete_returns_text_and_usage(
     assert captured["api_key"] == "test-key"
     assert captured["timeout"] == 7
     assert captured["num_retries"] == 1
+    assert captured["metadata"]["langfuse.generation.name"] == "llm-complete"
 
 
 async def test_missing_api_key_raises_without_calling_provider(

@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     search_max_results: int = Field(default=5, gt=0, le=10)
     search_timeout_seconds: float = Field(default=10.0, gt=0)
     tavily_api_key: SecretStr | None = None
+    # Observability (Langfuse). Tracing is off unless both keys are set.
+    langfuse_public_key: SecretStr | None = None
+    langfuse_secret_key: SecretStr | None = None
+    langfuse_host: str = "https://cloud.langfuse.com"
 
 
 @lru_cache

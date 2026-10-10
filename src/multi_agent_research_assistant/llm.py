@@ -7,6 +7,7 @@ from typing import Any, Literal, Protocol, TypedDict
 import litellm
 
 from multi_agent_research_assistant.config import Settings
+from multi_agent_research_assistant.request_context import request_id_var
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +63,10 @@ class LiteLLMClient:
             raise LLMNotConfiguredError("RA_GEMINI_API_KEY is not set")
 
         started = time.perf_counter()
+        request_id = request_id_var.get()
+        metadata: dict[str, str] = {"langfuse.generation.name": "llm-complete"}
+        if request_id != "-":
+            metadata["langfuse.trace.id"] = request_id
         try:
             # Typed as Any: LiteLLM's response type is a union that makes
             # strict mypy awkward, and we only read a few fields below.
@@ -72,6 +77,7 @@ class LiteLLMClient:
                 timeout=self._timeout,
                 max_tokens=self._max_tokens,
                 num_retries=self._max_retries,
+                metadata=metadata,
             )
         except Exception as exc:
             logger.warning("llm_call_failed model=%s error=%s", self._model, type(exc).__name__)
